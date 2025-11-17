@@ -329,7 +329,7 @@ class KeckLFC(object):
     def __sendemail(self,
                     mail_content,
                     subject='KECKLFC WARNING MESSAGE',
-                    recv_address=['mgao@caltech.edu','jge2@caltech.edu','stephanie.leifer@aero.org', 'yjkim@astro.ucla.edu'],
+                    recv_address=['gdoppmann@keck.hawaii.edu','jge2@caltech.edu','stephanie.leifer@aero.org'],
                     files=['test.log',],
                     path=r'C:\Users\KeckLFC\Desktop\Keck\Logs'):
 
@@ -662,6 +662,7 @@ class KeckLFC(object):
 
         if value==1:
             self.__sendemail('LFC_CLOSE_ALL is triggered, time is '+time.strftime('%Y-%m-%d %H:%M:%S'))
+            # can't use on off, need to write all 
             # self.LFC_PTAMP_ONOFF(0)
             # self.__sleep(0.1)
             # self.LFC_EDFA23_ONOFF(0)
@@ -1323,14 +1324,15 @@ class KeckLFC(object):
             return rfoscPS_i
 
     def LFC_WSP_PHASE(self, value=None):#TBD
-        # if test_mode: return
+        if test_mode: return
         #return
-        if self.ws == None:
-            self.ws = self.__LFC_WSP_connect()
-            self.ws.connect()
+        # if self.ws == None:
+        #     self.ws = self.__LFC_WSP_connect()
+        #     self.ws.connect()
 
         if value == None:
-            return self.ws_d2
+            pass
+            #return self.ws_d2
 
         
         if value != None:
@@ -1481,15 +1483,18 @@ class KeckLFC(object):
 
     def LFC_PTAMP_ONOFF(self, value=None):# test r
         if test_mode: return
-        ptamp=self.__LFC_PTAMP_connect()
-        
 
         if value != None:
-            ptamp.connect()
+            ptamp=self.__LFC_PTAMP_connect()
 
-            #print(f'value is {value}', type(value))
-            pt_dict={True:1,False:0}
-            value = pt_dict[value]
+            ptamp.connect()
+            if value in [True,1,'ON','on']:
+                value = 1
+            if value in [False,0,'OFF','off']:
+                value = 0
+
+            # pt_dict={True:1,False:0}
+            # value = pt_dict[value]
             ptamp.activation = value
             self.__sleep(0.5)
             #ptact = ptamp.activation
@@ -1498,11 +1503,31 @@ class KeckLFC(object):
             return 0
 
         if value == None:
+            ptamp=self.__LFC_PTAMP_connect()
             #return 0 # not testing MODIFY for now
             ptamp.connect()
+            self.__sleep(0.5)
             ptact=ptamp.activation
             status_dict={'ON':1,'OFF':0}
             ptact=status_dict[ptact]
+            self.__sleep(0.5)
+            ptamp.disconnect()
+            return ptact  # return
+    def LFC_CHECK_FULLCOMB(self, value=None):# test r
+        #if test_mode: return
+
+        if value != None:
+            return 2
+
+        if value == None:
+            ptamp=self.__LFC_PTAMP_connect()
+            #return 0 # not testing MODIFY for now
+            ptamp.connect()
+            self.__sleep(0.5)
+            ptact=ptamp.activation
+            status_dict={'ON':1,'OFF':0}
+            ptact=status_dict[ptact]
+            self.__sleep(0.5)
             ptamp.disconnect()
             return ptact  # return
 
@@ -1555,7 +1580,7 @@ class KeckLFC(object):
             return 0  # return
         
     def LFC_YJ_SHUTTER(self, value=None): #tets r w #err2
-        if test_mode: return
+        #if test_mode: return
         #return
         # arduino = self.__LFC_ARDUINO_connect()
         if self.arduino == None: 
@@ -1709,23 +1734,30 @@ class KeckLFC(object):
         return self.LFC_2BY2_SWITCH(value)
         
     def LFC_HK_SHUTTER(self, value=None): #read r w
-        if test_mode: return
+        #if test_mode: return
         #return
         hks = self.__LFC_HK_SHUTTER_connect()
         if value == None:
             
             # print(f'com={i}')
             hks.connect()
-            state=hks.get_status()
+            self.__sleep(0.5)
+            try:
+                state=hks.get_status()
+            except Exception as e:
+                state=hks.get_status()
+            self.__sleep(0.5)
             hks.disconnect()
             return state
         else:
-            if value == 1 or value == 'open':
+            if value in [True, 'open', 1]:
                 value = 1
-            elif value == 0 or value == 'close':
+            elif value in [False, 'close', 0]:
                 value = 0
             hks.connect()
+            self.__sleep(0.5)
             hks.set_status(value)
+            self.__sleep(0.5)
             # self.__sleep(0.5)
             # state=hks.get_status()
             hks.disconnect()

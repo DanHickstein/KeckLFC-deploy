@@ -76,7 +76,7 @@
 		<help level="verbose">YJ shutter status</help>
 		<capability type="write">True</capability>
 		<serverside>
-			<period>1800</period>
+			<period>300</period>
 		</serverside>
 		<values>
 			<entry>
@@ -129,7 +129,7 @@
 		<help level="verbose">HK shutter status</help>
 		<capability type="write">True</capability>
 		<serverside>
-			<period>1800</period>
+			<period>300</period>
 		</serverside>
 		<values>
 			<entry>
@@ -700,6 +700,9 @@
 		<help level="brief">High-power EDFA emission on/standby</help>
 		<help level="verbose">High-power EDFA emission on/standby</help>
 		<capability type="write">True</capability>
+		<serverside>
+			<period>1801</period>
+		</serverside>
 		<values>
 			<entry>
 				<key>0</key>
@@ -707,7 +710,31 @@
 			</entry>
 			<entry>
 				<key>1</key>
-				<value>on</value>
+				<value>full comb</value>
+			</entry>
+		</values>
+	</keyword>
+	<keyword>
+		<name>LFC_CHECK_FULLCOMB</name>
+		<type>enumerated</type>
+		<help level="brief">High-power EDFA emission on/standby</help>
+		<help level="verbose">High-power EDFA emission on/standby</help>
+		<capability type="write">True</capability>
+		<serverside>
+			<period>1801</period>
+		</serverside>
+		<values>
+			<entry>
+				<key>0</key>
+				<value>standby</value>
+			</entry>
+			<entry>
+				<key>1</key>
+				<value>full comb</value>
+			</entry>
+			<entry>
+				<key>2</key>
+				<value>checking</value>
 			</entry>
 		</values>
 	</keyword>
@@ -972,7 +999,7 @@
 		<help level="verbose">ptamp i defalut set</help>
 		<capability type="write">True</capability>
 		<serverside>
-			<period>1800</period>
+			<period>300</period>
 		</serverside>
 	
 	</keyword>

@@ -9,13 +9,28 @@ import numpy as np
 
 class AmonicsEDFA(Device):
 
+    # def __init__(self, addr='ASRL4::INSTR', name="Amonics EDFA"):
+    #     super().__init__(addr=addr, name=name)
+    #     self.__activation_timeout = 3  # time to wait for device to turn on/off activation and channel status. in unit of second.
+    #     self.inst.timeout = 25000  # communication time-out time set in units of ms
+    #     self.inst.baud_rate = 19200  # baud rate is 9600 by default. THIS SETTING IS NECESSARY for success communication
+    #     self.inst.read_termination = '\r\n'  # read_termination is not specified by default.
+    #     self.inst.write_termination = '\r\n'  # write_termination is '\r\n' by default.
     def __init__(self, addr='ASRL4::INSTR', name="Amonics EDFA"):
         super().__init__(addr=addr, name=name)
-        self.__activation_timeout = 3  # time to wait for device to turn on/off activation and channel status. in unit of second.
-        self.inst.timeout = 25000  # communication time-out time set in units of ms
-        self.inst.baud_rate = 19200  # baud rate is 9600 by default. THIS SETTING IS NECESSARY for success communication
-        self.inst.read_termination = '\r\n'  # read_termination is not specified by default.
-        self.inst.write_termination = '\r\n'  # write_termination is '\r\n' by default.
+        self.__activation_timeout = 3
+        self.init_device_settings()
+
+    def init_device_settings(self):
+        try:
+            if self.inst is not None:
+                self.inst.timeout = 25000
+                self.inst.baud_rate = 19200
+                self.inst.read_termination = '\r\n'
+                self.inst.write_termination = '\r\n'
+        except Exception as e:
+            self.warning(f"Error in device settings: {e}")
+    
 
     def printStatus(self):
 
